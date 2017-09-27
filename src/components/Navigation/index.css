@@ -1,0 +1,21 @@
+#nav {
+  padding: 10px;
+}
+
+button {
+  width: 49%;
+  height: 50px;
+}
+
+#page-header {
+  color: #fff
+}
+
+.navText {
+  font-family: Arial;
+  font-size: 20px
+}
+
+#navContainer {
+  background-color:  #454140;
+}
