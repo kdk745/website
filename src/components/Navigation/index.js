@@ -1,44 +1,31 @@
 import React from 'react';
-import './index.css';
-import {
-  Grid,
-  Row,
-  Col,
-  ButtonToolbar,
-  Button,
-  PageHeader
-} from 'react-bootstrap';
+import FontIcon from 'material-ui/FontIcon';
+import NavigationExpandMoreIcon from 'material-ui/svg-icons/navigation/expand-more';
+import RaisedButton from 'material-ui/RaisedButton';
+import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
 import {Link} from 'react-router-component';
 
 export default function Navigation(props) {
-  
+    const style = {
+      backgroundColor: "#c8e6c9",
+    };
+
     return (
-      <div id="navContainer">
-        <Grid>
-          <Row className="show-grid">
-            <Col xs={12} md={8}>
-              <PageHeader id="page-header">
-                Welcome to Dinn
-              </PageHeader>
-            </Col>
-          </Row>
-          <Row className="show-grid">
-            <Col id="nav" xs={12} md={8}>
-                <ButtonToolbar>
-                  <Link href="/guests/">
-                    <Button bsStyle="info">
-                        <span className="navText">GUESTS</span>
-                    </Button>
-                  </Link>
-                  <Link href="/restaurants/">
-                    <Button bsStyle="success">
-                      <span className="navText">RESTAURANTS</span>
-                    </Button>
-                  </Link>
-                </ButtonToolbar>
-            </Col>
-          </Row>
-        </Grid>
-      </div>
+      <Toolbar style={style}>
+        <ToolbarGroup>
+          <ToolbarTitle text="Dinn" />
+            <FontIcon className="muidocs-icon-custom-sort" />
+            <ToolbarSeparator />
+            <Link className="link" href="/guests">
+              <RaisedButton label="Guests" />
+            </Link>
+            <Link className="link" href="/restaurants">
+              <RaisedButton label="Sign In" primary={true} />
+            </Link>
+            <Link className="link" href="register">
+              <RaisedButton label="Register" secondary={true} />
+            </Link>
+        </ToolbarGroup>
+      </Toolbar>
     );
 }

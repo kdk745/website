@@ -10,7 +10,7 @@ import {
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 
-export default function Registration(props) {
+export default function SignIn(props) {
 
     const restLogin = () => {
       return props.RestLogin(props.restInfo);
@@ -27,36 +27,56 @@ export default function Registration(props) {
       padding: "5px 10px 5px 10px"
     }
 
+    const changeEmail = (event) => {
+      let obj = {...props.FormInfo};
+      const email = event.target.value;
+      obj['Email'] = email;
+      return props.FormUpdate(obj);
+    }
+
+    const changePw = (event) => {
+      let obj = {...props.FormInfo};
+      const pw = event.target.value;
+      obj['Password'] = pw;
+      return props.FormUpdate(obj);
+    }
+
+    const Submit = () => {
+      const Form = props.FormInfo;
+      if(props.SignIn) {
+        return(props.SignIn(Form));
+      }
+    }
+
+    const Redirect = () => {
+      window.location = 'localhost:5100/dashboard'
+    }
+    
     return (
       <div>
         <Navigation />
         <Card>
           <CardHeader
-            title="Restaurant Registration"
+            title="Restaurant Sign In"
           />
           <TextField
             style={textField}
             hintText="Enter Email"
             floatingLabelText="Email"
+            onChange={(event) => changeEmail(event)}
           /><br />
           <TextField
             style={textField}
             hintText="Enter Password"
             floatingLabelText="Password"
             type="password"
-          /><br />
-          <TextField
-            style={textField}
-            hintText="Enter Restaurant Name"
-            floatingLabelText="Restaurant Name"
-          /><br />
-          <TextField
-            style={textField}
-            hintText="Enter Address"
-            floatingLabelText="Address"
+            onChange={(event) => changePw(event)}
           />
           <CardActions>
-            <RaisedButton label="Submit" primary={true} />
+            <RaisedButton label="Submit" primary={true} onClick={() => Submit()}/>
+            <Link className="link" href="register">
+              <RaisedButton label="Register Here" secondary={true} />
+            </Link>
           </CardActions>
         </Card>
       </div>

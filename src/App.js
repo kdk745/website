@@ -2,42 +2,25 @@ import React, { Component } from 'react';
 import './App.css';
 import axios from 'axios';
 import Navigation from './components/Navigation';
-import CustomerLogin from './components/CustomerLogin';
-import RestaurantLogin from './components/RestaurantLogin';
-import RegistrationCont from './containers/RegistrationCont/';
 import {Locations, Location} from 'react-router-component';
-class App extends Component {
-  constructor() {
-    super();
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import SignIn from './containers/SignInContainer';
+import Registration from './components/Registration';
 
+
+class App extends Component {
+  constructor(props) {
+    super(props);
     this.state = {
-      searchText: '',
-      movies: [],
-      addedMovies: []
     };
   }
 
-  updateAdded(data) {
-    this.setState({
-      addedMovies: data
-    });
-  }
-
-  update(data) {
-    this.setState({
-      movies: data,
-    });
-  }
-
   componentDidMount() {
-    // axios.get('/addedMovies')
-    //   .then(resp => {
-    //     this.setState({
-    //       searchText: this.state.searchText,
-    //       addedMovies: resp.data
-    //     });
-    //   })
-    //   .catch(err => console.log(`Error! ${err}`));
+    const token = localStorage.getItem("token");
+    if (token) {
+      this.props.LoggedIn(token);
+    }
   }
 
   handleSearchBarChange(text) {
@@ -47,17 +30,40 @@ class App extends Component {
       );
   }
 
-  render() {
+  // RestComponent() {
+  //   return (this.props.restLoggedIn === "" ? RestaurantLogin : RestAdmin);
+  // }
+
+  MyApp() {
+    const muiTheme = getMuiTheme({
+      palette: {
+        primary1Color: "#689f38",
+        accent1Color: "#4caf50",
+      }
+    });
     return (
-      <div>
+      <MuiThemeProvider muiTheme={muiTheme}>
         <Locations>
           <Location path="/" handler={Navigation} />
-          <Location path="/guests/" handler={CustomerLogin} />
-          <Location path="/restaurants/" handler={RestaurantLogin} />
-          <Location path="/registration/" handler={RegistrationCont} />
+          <Location path="/restaurants" handler={SignIn} />
+          <Location path="/register" handler={Registration} />
+          {/* <Location path="/guests/" handler={this.GuestComponent()} />
+          <Location path="/restaurants/" handler={this.RestComponent()} />
+          <Location path="/registration/" handler={Registration} /> */}
         </Locations>
-      </div>
-    );
+      </MuiThemeProvider>
+    )
+  }
+
+
+  render() {
+
+
+    return(
+        <div>
+          {this.MyApp()}
+        </div>
+      )
   }
 }
 export default App;

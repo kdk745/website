@@ -1,73 +1,84 @@
 import {combineReducers} from 'redux';
-import {
-  CHANGE_SEARCH_TEXT,
-  RESTS_LOADING,
-  RESTS_LOAD_SUCCESS,
-  RESTS_LOAD_ERROR,
-  CHANGE_SELECT_VAL,
-  TRIGGER_MAP_SUCCESS,
-  TRIGGER_MAP,
-  TRIGGER_MAP_FAIL,
-  CHANGE_NAME_TEXT,
-  BOOK_TABLE,
-  BOOK_TABLE_FAIL,
-  TOGGLE_SPLASH,
-  CHANGE_GUEST_NAME,
-  CHANGE_GUEST_SELECT,
-  ADD_GUEST,
-  DELETE_GUEST,
-  CHANGE_WAIT,
-  UPDATE_WAIT,
-  REST_REGISTER,
-  GUEST_REGISTER,
-  GUEST_REG_UPDATE,
-  REST_REG_UPDATE
-} from '../actions';
 
-function guestRegister(state = '', action) {
-  if (action.type === GUEST_REGISTER) {
-    return action.type;
+function guestLoggedIn(state = '', action) {
+  switch(action.type) {
+    case 'GUEST_LOGIN_SUCCESS':
+    case 'GUEST_REGISTER_SUCCESS':
+      return action.value;
+    case 'LOG_OUT':
+      return '';
+  }
+  return state;
+}
+
+function LoggedIn(state = '', action) {
+  switch(action.type) {
+    case 'LOGIN_SUCCESS':
+    case 'REST_REGISTER_SUCCESS':
+      return action.value;
+    case 'LOG_OUT':
+      return '';
+  }
+  return state;
+}
+
+
+function guestRegister(state = false, action) {
+  if (action.type === 'GUEST_REGISTER_SUCCESS') {
+    return true;
+  }
+  return state;
+}
+
+function guestLoginInfo(state = {CEmail:'', CPwd:''}, action) {
+  if (action.type === 'GUEST_LOGIN_UPDATE') {
+    return action.value;
+  }
+  return state;
+}
+
+function SignInForm(state = {Email:'', Password:''}, action) {
+  if (action.type === 'SIGNIN_FORM_UPDATE') {
+    return action.value;
   }
   return state;
 }
 
 function guestRegInfo(state = {fname:'', lname:'', email:'', pwd:''}, action) {
-  if (action.type === GUEST_REG_UPDATE) {
+  if (action.type === 'GUEST_REG_UPDATE') {
     return action.value;
   }
   return state;
 }
 
 function restRegInfo(state = {rname:'', rfname:'', rlname:'', remail:'', rpwd:''}, action) {
-  if (action.type === REST_REG_UPDATE) {
+  if (action.type === 'REST_REG_UPDATE') {
     return action.value;
   }
   return state;
 }
 
-function restRegister(state = '', action) {
-  if (action.type === REST_REGISTER) {
-    return action.type;
+function restRegister(state = false, action) {
+  if (action.type === 'REST_REGISTER_SUCCESS') {
+    return true;
   }
   return state;
 }
 
-
-
 function isLoading(state = false, action) {
   switch (action.type) {
-    case RESTS_LOADING:
+    case 'RESTS_LOADING':
       return true;
-    case RESTS_LOAD_SUCCESS:
+    case 'RESTS_LOAD_SUCCESS':
       return false;
-    case RESTS_LOAD_ERROR:
+    case 'RESTS_LOAD_ERROR':
       return false;
   }
   return state;
 }
 
 function error(state = null, action) {
-  if (action.type === RESTS_LOAD_ERROR) {
+  if (action.type === 'RESTS_LOAD_ERROR') {
     return action.message;
   }
   return state;
@@ -75,11 +86,11 @@ function error(state = null, action) {
 
 function items(state = [], action) {
   switch (action.type) {
-    case RESTS_LOADING:
+    case 'RESTS_LOADING':
       return [];
-    case RESTS_LOAD_ERROR:
+    case 'RESTS_LOAD_ERROR':
       return [];
-    case RESTS_LOAD_SUCCESS:
+    case 'RESTS_LOAD_SUCCESS':
       return action.items;
   }
   return state;
@@ -92,112 +103,109 @@ const restaurants = combineReducers( {
 });
 
 function searchText(state = '', action) {
-  if (action.type === CHANGE_SEARCH_TEXT) {
+  if (action.type === 'CHANGE_SEARCH_TEXT') {
     return action.text;
   }
   return state;
 }
 
 function nameText(state = '', action) {
-  if (action.type === CHANGE_NAME_TEXT) {
+  if (action.type === 'CHANGE_NAME_TEXT') {
     return action.text;
   }
   return state;
 }
 
 function bookTbl(state = '', action) {
-  if (action.type === BOOK_TABLE) {
+  if (action.type === 'BOOK_TABLE') {
     return action.resp;
-  } else if (action.type === BOOK_TABLE_FAIL) {
+  } else if (action.type === 'BOOK_TABLE_FAIL') {
     return action.resp;
   }
   return state;
 }
 
-function toggleSplash(state = true, action) {
-  if (action.type === TOGGLE_SPLASH) {
-    return !action.bool;
-  }
-  return state;
-}
-
-function triggerMap(state = {coord: {lat: 0, lng: 0}}, action) {
+function map(state = {lat: 0, lng: 0}, action) {
   switch (action.type) {
-    case TRIGGER_MAP:
+    case 'TRIGGER_MAP':
       return 'map loading';
-    case TRIGGER_MAP_SUCCESS:
-      return action;
-    case TRIGGER_MAP_FAIL:
+    case 'TRIGGER_MAP_SUCCESS':
+      return action.coords;
+    case 'TRIGGER_MAP_FAIL':
       return action.err;
     default:
       return state;
   }
 }
 
-function mapDisplay(state = 'none', action) {
-  if (action.type === TRIGGER_MAP_SUCCESS) {
-    return '';
-  }
-  return state;
-}
-
-const map = combineReducers( {
-  triggerMap,
-  mapDisplay
-});
-
 function selectVal(state = 1, action) {
-  if (action.type === CHANGE_SELECT_VAL) {
+  if (action.type === 'CHANGE_SELECT_VAL') {
     return action.val;
   }
   return state;
 }
 
 function changeGuestName(state = '', action) {
-  if (action.type === CHANGE_GUEST_NAME) {
+  if (action.type === 'CHANGE_GUEST_NAME') {
     return action.text;
   }
   return state;
 }
 
 function changeGuestSelect(state = 1, action) {
-  if (action.type === CHANGE_GUEST_SELECT) {
+  if (action.type === 'CHANGE_GUEST_SELECT') {
     return action.party;
   }
   return state;
 }
 
 function addGuest(state = '', action) {
-  if (action.type === ADD_GUEST) {
+  if (action.type === 'ADD_GUEST') {
     return action;
   }
   return state;
 }
 
 function updateWait(state = '', action) {
-  if (action.type === UPDATE_WAIT) {
+  if (action.type === 'UPDATE_WAIT') {
     return action;
   }
   return state;
 }
 
 function deleteGuest(state = '', action) {
-  if (action.type === DELETE_GUEST) {
+  if (action.type === 'DELETE_GUEST') {
     return action.type;
   }
   return state;
 }
 
 function changeWait(state = '', action) {
-  if (action.type === CHANGE_WAIT) {
+  if (action.type === 'CHANGE_WAIT') {
     return action.text;
   }
   return state;
 }
 
+
 export default combineReducers( {
   guestRegister,
   restRegister,
   guestRegInfo,
-  restRegInfo
+  restRegInfo,
+  guestLoginInfo,
+  SignInForm,
+  LoggedIn,
+  searchText,
+  restaurants,
+  nameText,
+  bookTbl,
+  map,
+  selectVal,
+  changeGuestName,
+  changeGuestSelect,
+  addGuest,
+  updateWait,
+  deleteGuest,
+  changeWait
 });

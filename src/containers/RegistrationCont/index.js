@@ -11,7 +11,11 @@ import {
 const mapStateToProps = (state) => {
   return {
     guestInfo: state.guestRegInfo,
-    restInfo: state.restRegInfo
+    restInfo: state.restRegInfo,
+    restRegisterSuccess: state.restRegister,
+    guestRegisterSuccess: state.guestRegister,
+    restLoggedIn: state.restLoggedIn,
+    guestLoggedIn: state.guestLoggedIn
   }
 }
 

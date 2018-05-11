@@ -62,33 +62,47 @@ export function bookTblFail(text) {
 export const TRIGGER_MAP = 'TRIGGER_MAP';
 
 export function triggerMap(searchText) {
+
   return (dispatch) => {
-    // request triggers Loading
     axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${searchText}&key=AIzaSyB3xtO0L1CN2laHV-NcVNpj6tGQ8yCjXIM`)
       .then((result) => {
-        dispatch(triggerMapSuccess(result.data));
-      }).catch(() => {
-        dispatch(triggerMapFail('no results'));
-      });
-
-    dispatch({
-      type: TRIGGER_MAP
+        dispatch(triggerMapSuccess(result.data.results[0].geometry.location))
+      }).catch((err) => {
+        dispatch(triggerMapFail(err));
     });
   };
 }
 
+export const REST_ADD_GUEST = 'REST_ADD_GUEST';
+
+export function restAddGuest(Obj) {
+  return (dispatch) => {
+    fetch(`/addGuest/${Obj._id}`, {
+      method: 'PUT',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(Obj)
+    }).then((res) => {
+      return res.json();
+    }).then((data) => {
+      console.log(data);
+      // const { token } = data;
+      // dispatch(restRegisterSuccess(token));
+    });
+  }
+}
+
 export const TRIGGER_MAP_SUCCESS = 'TRIGGER_MAP_SUCCESS';
-export function triggerMapSuccess(searchResults) {
+export function triggerMapSuccess(coords) {
   return {
     type: TRIGGER_MAP_SUCCESS,
-    coord: {
-      lat: searchResults.results[0].geometry.location.lat,
-      lng: searchResults.results[0].geometry.location.lng
+    coords: {
+      lat: coords.lat,
+      lng: coords.lng
     }
   };
 }
 
-export const TRIGGER_MAP_FAIL = 'TRIGGER_MAP_LOAD';
+export const TRIGGER_MAP_FAIL = 'TRIGGER_MAP_FAIL';
 export function triggerMapFail(err) {
   return {
     type: TRIGGER_MAP_FAIL,
@@ -256,7 +270,7 @@ export function restRegister(object) {
   }
   return (dispatch) => {
     // request triggers Loading
-    fetch('/api/signup', {
+    fetch('/restaurant/signup', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(reqBody)
@@ -292,14 +306,80 @@ export function restRegisterFail() {
   }
 }
 
-export const GUEST_REGISTER = 'GUEST_REGISTER';
+export const CHECK_LOGGED_IN = 'CHECK_LOGGED_IN';
 
-export function guestRegister(object) {
-  console.log(object);
-  return {
-    type: GUEST_REGISTER,
-    value: object
+export function checkLoggedIn(token) {
+  if (token) {
+    const reqBody = { token };
+    return (dispatch) => {
+      fetch("/checklogin", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(reqBody)
+      }).then((res) => {
+        return res.json();
+      }).then((data) => {
+          console.log(data);
+          const {token, user} = data;
+          localStorage.setItem('token', token);
+          dispatch(SignInSuccess(token));
+      })
+    }
   }
+}
+
+export function signInFormUpdate(obj) {
+  return {
+    type: 'SIGNIN_FORM_UPDATE',
+    value: obj
+  }
+}
+
+export function signIn(obj) {
+
+  const reqBody = {
+    username: obj.Email,
+    password: obj.Password
+  }
+  return (dispatch) => {
+    fetch("/login", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(reqBody)
+    }).then((res) => {
+      return (res.status === 401 ? "Sign in Error" : res.json());
+    }).then((data) => {
+      console.log(data);
+      localStorage.setItem("token", data.token);
+      dispatch(SignInSuccess(data));
+    }).catch(() => {
+      dispatch(SignInFail('could not log in as restaurant'));
+    });;
+  }
+}
+
+export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
+export function SignInSuccess(data) {
+  return {
+    type: LOGIN_SUCCESS,
+    value: data
+  }
+}
+
+export const LOGIN_FAIL = 'LOGIN_FAIL';
+export function SignInFail(text) {
+  return ({
+    type: LOGIN_FAIL,
+    resp: text
+  });
+}
+
+export const LOG_OUT = 'LOG_OUT';
+export function logOut() {
+  localStorage.removeItem("token");
+  return({
+    type: LOG_OUT
+  })
 }
 
 export const GUEST_REG_UPDATE = 'GUEST_REG_UPDATE';
